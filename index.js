@@ -42,7 +42,14 @@ function encodeRaw (version, privateKey, compressed) {
 }
 
 function decode (string, version) {
-  return decodeRaw(bs58check.decode(string), version)
+  const data = decodeRaw(bs58check.decode(string), version) 
+  if(data.privateKey instanceof Uint8Array ){
+    const uint8Array = new Uint8Array(Object.keys(data.privateKey).map(key => data.privateKey[key]));
+// Convert Uint8Array to Buffer
+    const buffer = Buffer.from(uint8Array);
+    data.privateKey = buffer
+  }
+  return data
 }
 
 function encode (version, privateKey, compressed) {
